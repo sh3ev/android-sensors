@@ -25,10 +25,9 @@ class GyroscopeActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_gyroscope)
         
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            title = "Żyroskop"
-        }
+        // Set up toolbar
+        setSupportActionBar(findViewById(R.id.toolbar))
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         
         // Inicjalizacja widoków
         xTextView = findViewById(R.id.xTextView)
