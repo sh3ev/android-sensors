@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.android_sensors.MainActivity"
+        android:label="Sensory"
+        tools:layout="@layout/activity_main">
+        <action
+            android:id="@+id/action_main_to_compass"
+            app:destination="@id/compassFragment" />
+        <action
+            android:id="@+id/action_main_to_accelerometer"
+            app:destination="@id/accelerometerFragment" />
+        <action
+            android:id="@+id/action_main_to_gyroscope"
+            app:destination="@id/gyroscopeFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/compassFragment"
+        android:name="com.example.android_sensors.CompassActivity"
+        android:label="Kompas"
+        tools:layout="@layout/activity_compass" />
+
+    <fragment
+        android:id="@+id/accelerometerFragment"
+        android:name="com.example.android_sensors.AccelerometerActivity"
+        android:label="Akcelerometr"
+        tools:layout="@layout/activity_accelerometer" />
+
+    <fragment
+        android:id="@+id/gyroscopeFragment"
+        android:name="com.example.android_sensors.GyroscopeActivity"
+        android:label="Żyroskop"
+        tools:layout="@layout/activity_gyroscope" />
+
+</navigation>

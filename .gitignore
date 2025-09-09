@@ -13,3 +13,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+/android-sensors.code-workspace
+/README.md
