@@ -1,27 +1,26 @@
 package com.example.android_sensors
 
-import android.content.Context
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
 import android.os.Bundle
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.android_sensors.ui.viewmodel.CompassViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
-class CompassActivity : AppCompatActivity(), SensorEventListener {
-    private var sensor: Sensor? = null
-    private var sensorManager: SensorManager? = null
+@AndroidEntryPoint
+class CompassActivity : AppCompatActivity() {
+    private val viewModel: CompassViewModel by viewModels()
     private lateinit var compassImageView: ImageView
     private lateinit var rotationTextView: TextView
     private lateinit var directionTextView: TextView
-
     private var currentDegree = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,9 +33,6 @@ class CompassActivity : AppCompatActivity(), SensorEventListener {
             title = "Kompas"
         }
         
-        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        sensor = sensorManager!!.getDefaultSensor(Sensor.TYPE_ORIENTATION)
-        
         compassImageView = findViewById(R.id.compassImageView)
         rotationTextView = findViewById(R.id.rotationTextView)
         directionTextView = findViewById(R.id.directionTextView)
@@ -46,18 +42,33 @@ class CompassActivity : AppCompatActivity(), SensorEventListener {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        
+        observeViewModel()
     }
     
-    override fun onSensorChanged(event: SensorEvent?) {
-        val degree = Math.round(event!!.values[0])
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            viewModel.compassData.collect { compassData ->
+                updateCompassUI(compassData)
+            }
+        }
         
-        rotationTextView.text = "$degree°"
-        
-        updateDirectionText(degree)
+        lifecycleScope.launch {
+            viewModel.error.collect { error ->
+                error?.let {
+                    // Można dodać Toast lub Snackbar do wyświetlania błędów
+                }
+            }
+        }
+    }
+    
+    private fun updateCompassUI(compassData: com.example.android_sensors.data.CompassData) {
+        rotationTextView.text = "${compassData.degrees}°"
+        directionTextView.text = compassData.direction
         
         val rotationAnimation = RotateAnimation(
             currentDegree, 
-            (-degree).toFloat(),
+            (-compassData.degrees).toFloat(),
             Animation.RELATIVE_TO_SELF, 0.5f, 
             Animation.RELATIVE_TO_SELF, 0.5f
         )
@@ -66,35 +77,7 @@ class CompassActivity : AppCompatActivity(), SensorEventListener {
         rotationAnimation.fillAfter = true
         
         compassImageView.startAnimation(rotationAnimation)
-        
-        currentDegree = (-degree).toFloat()
-    }
-    
-    private fun updateDirectionText(degree: Int) {
-        val direction = when {
-            degree >= 337.5 || degree < 22.5 -> "N"
-            degree >= 22.5 && degree < 67.5 -> "NE"
-            degree >= 67.5 && degree < 112.5 -> "E"
-            degree >= 112.5 && degree < 157.5 -> "SE"
-            degree >= 157.5 && degree < 202.5 -> "S"
-            degree >= 202.5 && degree < 247.5 -> "SW"
-            degree >= 247.5 && degree < 292.5 -> "W"
-            else -> "NW"
-        }
-        directionTextView.text = direction
-    }
-    
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-    }
-    
-    override fun onResume() {
-        super.onResume()
-        sensorManager?.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME)
-    }
-    
-    override fun onPause() {
-        super.onPause()
-        sensorManager?.unregisterListener(this)
+        currentDegree = (-compassData.degrees).toFloat()
     }
     
     override fun onSupportNavigateUp(): Boolean {
