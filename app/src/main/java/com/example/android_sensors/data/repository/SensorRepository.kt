@@ -28,7 +28,7 @@ class SensorRepository @Inject constructor(
     private val magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
     
     /**
-     * Zwraca Flow z danymi akcelerometru
+     * Returns a Flow with accelerometer data
      */
     fun getAccelerometerData(): Flow<AccelerometerData> = callbackFlow {
         val listener = object : SensorEventListener {
@@ -56,7 +56,7 @@ class SensorRepository @Inject constructor(
     }.distinctUntilChanged()
     
     /**
-     * Zwraca Flow z danymi żyroskopu
+     * Returns a Flow with gyroscope data
      */
     fun getGyroscopeData(): Flow<GyroscopeData> = callbackFlow {
         val listener = object : SensorEventListener {
@@ -84,7 +84,7 @@ class SensorRepository @Inject constructor(
     }.distinctUntilChanged()
     
     /**
-     * Zwraca Flow z danymi kompasu
+     * Returns a Flow with compass data
      */
     fun getCompassData(): Flow<CompassData> = callbackFlow {
         val lastAccelerometer = FloatArray(3)
@@ -148,7 +148,7 @@ class SensorRepository @Inject constructor(
     }.distinctUntilChanged()
     
     /**
-     * Sprawdza czy sensory są dostępne
+     * Checks if all required sensors are available on the device
      */
     fun areSensorsAvailable(): Boolean {
         return accelerometer != null && gyroscope != null && magnetometer != null

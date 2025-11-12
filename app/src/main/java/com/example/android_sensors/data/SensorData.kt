@@ -1,7 +1,7 @@
 package com.example.android_sensors.data
 
 /**
- * Data class reprezentujący dane z akcelerometru
+ * Data class representing accelerometer sensor data
  */
 data class AccelerometerData(
     val x: Float,
@@ -11,7 +11,7 @@ data class AccelerometerData(
 )
 
 /**
- * Data class reprezentujący dane z żyroskopu
+ * Data class representing gyroscope sensor data
  */
 data class GyroscopeData(
     val x: Float,
@@ -21,7 +21,7 @@ data class GyroscopeData(
 )
 
 /**
- * Data class reprezentujący dane z kompasu
+ * Data class representing compass sensor data
  */
 data class CompassData(
     val degrees: Int,

@@ -37,7 +37,7 @@ class AccelerometerViewModel @Inject constructor(
                     _accelerometerData.value = data
                 }
             } catch (e: Exception) {
-                _error.value = "Błąd podczas odczytu akcelerometru: ${e.message}"
+                _error.value = "Error reading accelerometer: ${e.message}"
                 _isLoading.value = false
             }
         }

@@ -37,7 +37,7 @@ class GyroscopeViewModel @Inject constructor(
                     _gyroscopeData.value = data
                 }
             } catch (e: Exception) {
-                _error.value = "Błąd podczas odczytu żyroskopu: ${e.message}"
+                _error.value = "Error reading gyroscope: ${e.message}"
                 _isLoading.value = false
             }
         }

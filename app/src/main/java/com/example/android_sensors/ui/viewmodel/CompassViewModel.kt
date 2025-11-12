@@ -37,7 +37,7 @@ class CompassViewModel @Inject constructor(
                     _compassData.value = data
                 }
             } catch (e: Exception) {
-                _error.value = "Błąd podczas odczytu kompasu: ${e.message}"
+                _error.value = "Error reading compass: ${e.message}"
                 _isLoading.value = false
             }
         }
