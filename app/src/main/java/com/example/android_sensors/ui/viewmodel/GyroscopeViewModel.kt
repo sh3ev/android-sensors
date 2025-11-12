@@ -32,6 +32,12 @@ class GyroscopeViewModel @Inject constructor(
     private fun startGyroscopeDataCollection() {
         viewModelScope.launch {
             try {
+                if (!sensorRepository.isGyroscopeAvailable()) {
+                    _error.value = "Gyroscope sensor is not available on this device"
+                    _isLoading.value = false
+                    return@launch
+                }
+                
                 _isLoading.value = false
                 sensorRepository.getGyroscopeData().collect { data ->
                     _gyroscopeData.value = data

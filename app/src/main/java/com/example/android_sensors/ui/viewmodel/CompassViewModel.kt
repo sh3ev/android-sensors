@@ -32,6 +32,12 @@ class CompassViewModel @Inject constructor(
     private fun startCompassDataCollection() {
         viewModelScope.launch {
             try {
+                if (!sensorRepository.isMagnetometerAvailable()) {
+                    _error.value = "Magnetometer sensor is not available on this device"
+                    _isLoading.value = false
+                    return@launch
+                }
+                
                 _isLoading.value = false
                 sensorRepository.getCompassData().collect { data ->
                     _compassData.value = data

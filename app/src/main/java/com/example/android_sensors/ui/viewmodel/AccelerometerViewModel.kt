@@ -32,6 +32,12 @@ class AccelerometerViewModel @Inject constructor(
     private fun startAccelerometerDataCollection() {
         viewModelScope.launch {
             try {
+                if (!sensorRepository.isAccelerometerAvailable()) {
+                    _error.value = "Accelerometer sensor is not available on this device"
+                    _isLoading.value = false
+                    return@launch
+                }
+                
                 _isLoading.value = false
                 sensorRepository.getAccelerometerData().collect { data ->
                     _accelerometerData.value = data

@@ -148,6 +148,21 @@ class SensorRepository @Inject constructor(
     }.distinctUntilChanged()
     
     /**
+     * Checks if accelerometer sensor is available on the device
+     */
+    fun isAccelerometerAvailable(): Boolean = accelerometer != null
+    
+    /**
+     * Checks if gyroscope sensor is available on the device
+     */
+    fun isGyroscopeAvailable(): Boolean = gyroscope != null
+    
+    /**
+     * Checks if magnetometer sensor is available on the device
+     */
+    fun isMagnetometerAvailable(): Boolean = magnetometer != null
+    
+    /**
      * Checks if all required sensors are available on the device
      */
     fun areSensorsAvailable(): Boolean {
