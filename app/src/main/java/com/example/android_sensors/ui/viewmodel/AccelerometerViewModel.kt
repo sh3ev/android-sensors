@@ -11,6 +11,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel for the Accelerometer screen.
+ * Manages accelerometer sensor data collection and exposes it to the UI.
+ * Handles sensor availability checks and error states.
+ */
 @HiltViewModel
 class AccelerometerViewModel @Inject constructor(
     private val sensorRepository: SensorRepository
@@ -32,12 +37,18 @@ class AccelerometerViewModel @Inject constructor(
     private fun startAccelerometerDataCollection() {
         viewModelScope.launch {
             try {
+                if (!sensorRepository.isAccelerometerAvailable()) {
+                    _error.value = "Accelerometer sensor is not available on this device"
+                    _isLoading.value = false
+                    return@launch
+                }
+                
                 _isLoading.value = false
                 sensorRepository.getAccelerometerData().collect { data ->
                     _accelerometerData.value = data
                 }
             } catch (e: Exception) {
-                _error.value = "Błąd podczas odczytu akcelerometru: ${e.message}"
+                _error.value = "Error reading accelerometer: ${e.message}"
                 _isLoading.value = false
             }
         }

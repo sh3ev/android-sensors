@@ -11,6 +11,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel for the Gyroscope screen.
+ * Manages gyroscope sensor data collection and exposes it to the UI.
+ * Handles sensor availability checks and error states.
+ */
 @HiltViewModel
 class GyroscopeViewModel @Inject constructor(
     private val sensorRepository: SensorRepository
@@ -32,12 +37,18 @@ class GyroscopeViewModel @Inject constructor(
     private fun startGyroscopeDataCollection() {
         viewModelScope.launch {
             try {
+                if (!sensorRepository.isGyroscopeAvailable()) {
+                    _error.value = "Gyroscope sensor is not available on this device"
+                    _isLoading.value = false
+                    return@launch
+                }
+                
                 _isLoading.value = false
                 sensorRepository.getGyroscopeData().collect { data ->
                     _gyroscopeData.value = data
                 }
             } catch (e: Exception) {
-                _error.value = "Błąd podczas odczytu żyroskopu: ${e.message}"
+                _error.value = "Error reading gyroscope: ${e.message}"
                 _isLoading.value = false
             }
         }

@@ -11,6 +11,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel for the Compass screen.
+ * Manages compass sensor data collection (using accelerometer and magnetometer) and exposes it to the UI.
+ * Handles sensor availability checks and error states.
+ */
 @HiltViewModel
 class CompassViewModel @Inject constructor(
     private val sensorRepository: SensorRepository
@@ -32,12 +37,18 @@ class CompassViewModel @Inject constructor(
     private fun startCompassDataCollection() {
         viewModelScope.launch {
             try {
+                if (!sensorRepository.isMagnetometerAvailable()) {
+                    _error.value = "Magnetometer sensor is not available on this device"
+                    _isLoading.value = false
+                    return@launch
+                }
+                
                 _isLoading.value = false
                 sensorRepository.getCompassData().collect { data ->
                     _compassData.value = data
                 }
             } catch (e: Exception) {
-                _error.value = "Błąd podczas odczytu kompasu: ${e.message}"
+                _error.value = "Error reading compass: ${e.message}"
                 _isLoading.value = false
             }
         }

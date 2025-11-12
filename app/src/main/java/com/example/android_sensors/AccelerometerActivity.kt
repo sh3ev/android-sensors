@@ -1,41 +1,41 @@
 package com.example.android_sensors
 
 import android.os.Bundle
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.example.android_sensors.databinding.ActivityAccelerometerBinding
 import com.example.android_sensors.ui.viewmodel.AccelerometerViewModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+/**
+ * Activity that displays real-time accelerometer sensor data.
+ * Shows X, Y, Z axis values and the magnitude of acceleration.
+ * Data collection is lifecycle-aware and stops when the activity is not in the foreground.
+ */
 @AndroidEntryPoint
 class AccelerometerActivity : AppCompatActivity() {
     private val viewModel: AccelerometerViewModel by viewModels()
-    private lateinit var xTextView: TextView
-    private lateinit var yTextView: TextView
-    private lateinit var zTextView: TextView
-    private lateinit var magnitudeTextView: TextView
+    private lateinit var binding: ActivityAccelerometerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_accelerometer)
+        binding = ActivityAccelerometerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         
         // Set up toolbar
-        setSupportActionBar(findViewById(R.id.toolbar))
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         
-        // Inicjalizacja widoków
-        xTextView = findViewById(R.id.xTextView)
-        yTextView = findViewById(R.id.yTextView)
-        zTextView = findViewById(R.id.zTextView)
-        magnitudeTextView = findViewById(R.id.magnitudeTextView)
-        
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.accelerometer_layout)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.accelerometerLayout) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
@@ -45,26 +45,35 @@ class AccelerometerActivity : AppCompatActivity() {
     }
     
     private fun observeViewModel() {
+        // Collect accelerometer data only when the lifecycle is at least STARTED
         lifecycleScope.launch {
-            viewModel.accelerometerData.collect { accelerometerData ->
-                updateAccelerometerUI(accelerometerData)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.accelerometerData.collect { accelerometerData ->
+                    updateAccelerometerUI(accelerometerData)
+                }
             }
         }
         
+        // Collect errors throughout the activity lifecycle
         lifecycleScope.launch {
             viewModel.error.collect { error ->
                 error?.let {
-                    // Można dodać Toast lub Snackbar do wyświetlania błędów
+                    Snackbar.make(
+                        binding.root,
+                        it,
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    viewModel.clearError()
                 }
             }
         }
     }
     
     private fun updateAccelerometerUI(accelerometerData: com.example.android_sensors.data.AccelerometerData) {
-        xTextView.text = "X: ${String.format("%.2f", accelerometerData.x)} m/s²"
-        yTextView.text = "Y: ${String.format("%.2f", accelerometerData.y)} m/s²"
-        zTextView.text = "Z: ${String.format("%.2f", accelerometerData.z)} m/s²"
-        magnitudeTextView.text = "Wielkość: ${String.format("%.2f", accelerometerData.magnitude)} m/s²"
+        binding.xTextView.text = "X: ${String.format("%.2f", accelerometerData.x)} m/s²"
+        binding.yTextView.text = "Y: ${String.format("%.2f", accelerometerData.y)} m/s²"
+        binding.zTextView.text = "Z: ${String.format("%.2f", accelerometerData.z)} m/s²"
+        binding.magnitudeTextView.text = "${String.format("%.2f", accelerometerData.magnitude)} m/s²"
     }
     
     override fun onSupportNavigateUp(): Boolean {
