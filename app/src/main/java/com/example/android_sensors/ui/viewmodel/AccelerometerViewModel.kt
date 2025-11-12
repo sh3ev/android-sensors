@@ -11,6 +11,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel for the Accelerometer screen.
+ * Manages accelerometer sensor data collection and exposes it to the UI.
+ * Handles sensor availability checks and error states.
+ */
 @HiltViewModel
 class AccelerometerViewModel @Inject constructor(
     private val sensorRepository: SensorRepository

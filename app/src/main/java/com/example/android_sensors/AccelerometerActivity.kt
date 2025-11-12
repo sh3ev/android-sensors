@@ -15,6 +15,11 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+/**
+ * Activity that displays real-time accelerometer sensor data.
+ * Shows X, Y, Z axis values and the magnitude of acceleration.
+ * Data collection is lifecycle-aware and stops when the activity is not in the foreground.
+ */
 @AndroidEntryPoint
 class AccelerometerActivity : AppCompatActivity() {
     private val viewModel: AccelerometerViewModel by viewModels()

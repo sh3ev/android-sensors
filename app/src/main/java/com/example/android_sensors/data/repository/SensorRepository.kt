@@ -17,6 +17,12 @@ import kotlin.math.sqrt
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Repository for accessing device sensors.
+ * Provides Flow-based access to accelerometer, gyroscope, and compass (magnetometer) data.
+ * Automatically manages sensor listener registration and unregistration.
+ * Singleton to ensure only one instance manages sensor access across the app.
+ */
 @Singleton
 class SensorRepository @Inject constructor(
     @ApplicationContext private val context: Context

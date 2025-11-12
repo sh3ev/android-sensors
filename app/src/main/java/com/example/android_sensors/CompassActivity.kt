@@ -17,6 +17,12 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+/**
+ * Activity that displays a real-time compass using magnetometer and accelerometer data.
+ * Shows the device's orientation in degrees and cardinal directions.
+ * The compass image rotates smoothly to indicate the current heading.
+ * Data collection is lifecycle-aware and stops when the activity is not in the foreground.
+ */
 @AndroidEntryPoint
 class CompassActivity : AppCompatActivity() {
     private val viewModel: CompassViewModel by viewModels()

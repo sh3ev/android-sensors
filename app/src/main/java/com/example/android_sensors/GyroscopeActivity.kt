@@ -15,6 +15,11 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+/**
+ * Activity that displays real-time gyroscope sensor data.
+ * Shows X, Y, Z axis rotation rates and the magnitude of rotation.
+ * Data collection is lifecycle-aware and stops when the activity is not in the foreground.
+ */
 @AndroidEntryPoint
 class GyroscopeActivity : AppCompatActivity() {
     private val viewModel: GyroscopeViewModel by viewModels()

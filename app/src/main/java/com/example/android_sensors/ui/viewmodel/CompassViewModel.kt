@@ -11,6 +11,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel for the Compass screen.
+ * Manages compass sensor data collection (using accelerometer and magnetometer) and exposes it to the UI.
+ * Handles sensor availability checks and error states.
+ */
 @HiltViewModel
 class CompassViewModel @Inject constructor(
     private val sensorRepository: SensorRepository

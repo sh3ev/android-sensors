@@ -9,6 +9,10 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.android_sensors.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Main activity that displays sensor selection options.
+ * Users can navigate to Compass, Accelerometer, or Gyroscope screens from here.
+ */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
